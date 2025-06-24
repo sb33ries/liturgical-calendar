@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catholic Liturgical Calendar</title>
+    <style>
+        body {
+            background-color: white;
+            font-family: 'Georgia', serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .wrapper {
+            display: flex;
+            align-items: center; /* vertical centering */
+            gap: 40px; /* space between tooltip and calendar */
+        }
+        .left-panel {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 550px;
+            width: 330px;
+            padding: 0px;
+        }
+
+        .daily-info {
+            background: #f9f9f9;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .daily-info h2 {
+            margin-top: 0;
+            font-size: 20px;
+            color: #333;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 5px;
+        }
+
+        .reading-section {
+            margin-top: 16px;
+        }
+
+        .reading-section h3 {
+            font-size: 14px;
+            margin-bottom: 6px;
+            color: #555;
+        }
+
+        .reading-section ul {
+            padding-left: 20px;
+            margin: 0;
+            font-size: 13px;
+            color: #444;
+        }
+
+        .calendar-container {
+            position: relative;
+            width: 600px;
+            height: 600px;
+        }
+
+        .calendar-svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .season-segment {
+            cursor: pointer;
+            transition: all 0.3s ease;
+            stroke: #ffffff;
+            stroke-width: 2;
+            opacity: 0.2; /* Default opacity */
+        }
+
+        .season-segment:hover {
+            stroke-width: 4;
+            filter: brightness(1.1);
+            opacity: 0.7; /* Increase opacity on hover */
+        }
+
+        
+        .inner-circle {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 220px;
+            height: 220px;
+            background-color: white;
+            border: 2px solid #ffffff;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 20;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 16px;
+            text-align: center;
+            line-height: 1.3;
+        }
+
+        .season-label {
+            position: absolute;
+            font-size: 12px;
+            font-weight: bold;
+            text-align: center;
+            transform: translate(-50%, -50%);
+            z-index: 15;
+            pointer-events: none;
+        }
+
+        .tooltip {
+            width: 320px; /* wider box */
+            background-color: rgba(0, 0, 0, 0.95);
+            color: white;
+            padding: 16px;
+            border-radius: 10px;
+            font-size: 14px;
+            pointer-events: none;
+            z-index: 30;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            line-height: 1.6;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            position: relative; /* no longer absolute */
+            max-height: 600px;
+        }
+
+        .tooltip.show {
+            opacity: 1;
+        }
+
+
+
+        .tooltip h4 { margin: 0 0 8px 0; color: #FFD700; font-size: 15px; }
+
+        .tooltip .dates { font-weight: bold; margin-bottom: 6px; color: #87CEEB; }
+
+        .tooltip .description { font-size: 12px; opacity: 0.9; margin-bottom: 8px; }
+
+        .tooltip .feasts { font-size: 11px; opacity: 0.8; }
+        @media (max-width: 768px) {
+            body {
+                align-items: flex-start;
+            }
+
+            .wrapper {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .left-panel {
+                width: 100%;
+                height: auto;
+                max-width: 600px;
+            }
+
+            .calendar-container {
+                width: 100%;
+                max-width: 600px;
+                height: auto;
+                aspect-ratio: 1 / 1;
+                margin-top: 20px;
+            }
+
+            .calendar-svg {
+                width: 100%;
+                height: auto;
+            }
+
+            .tooltip {
+                width: 100%;
+                max-width: 600px;
+            }
+
+            .inner-circle {
+                width: 35vw;
+                height: 35vw;
+                font-size: 4vw;
+            }
+
+            #today-label {
+                display: none; /* Optional: hide label if it's too small on mobile */
+            }
+        }
+
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <!-- Left Panel (Info Box + Daily Info) -->
+        <div class="left-panel">
+            <!-- Top: Daily Info Section -->
+            <div class="daily-info">
+                <h2 id="today-date">Loading date…</h2>
+                <!-- <div class="today-date" id="today-date">Loading date…</div> -->
+
+                <div class="reading-section">
+                    <h3>
+                        <a href="https://bible.usccb.org/daily-bible-reading" target="_blank" rel="noopener noreferrer">
+                            Today's Readings
+                        </a>
+                    </h3>
+                </div>
+
+
+
+                <div class="reading-section">
+                    <h3>Upcoming Dates</h3>
+                    <ul id="important-dates"></ul>
+                </div>
+            </div>
+
+            <!-- Bottom: Tooltip -->
+            <div class="tooltip" id="tooltip"></div>
+        </div>
+
+        <!-- Calendar -->
+        <div class="calendar-container">
+            <svg class="calendar-svg" viewBox="0 0 600 600">
+                <g id="segments"></g>
+                <line id="today-marker" stroke="black" stroke-dasharray="4,4" stroke-width="2" />
+                <text id="today-label" font-size="12" fill="black" text-anchor="middle">Today</text>
+            </svg>
+
+            <div class="inner-circle">
+                Catholic<br>Liturgical<br>Calendar<br>2024–2025
+            </div>
+        </div>
+    </div>
+
+
+
+    <script>
+        // Season data with duration in days
+        const seasons = [
+        {
+            name: "Advent",
+            days: 28,
+            color: "#9966CC",
+            dates: "Sunday, Dec 1 – Tuesday, Dec 24, 2024",
+            liturgicalColor: "Purple",
+            description: "Season of joyful expectation and preparation for the coming of Christ",
+            feasts: "First Sunday of Advent (Sun, Dec 1) • St. Nicholas (Fri, Dec 6) • Immaculate Conception (Sun, Dec 8) • St. Lucy (Fri, Dec 13) • O Antiphons (Dec 17–23)"
+        },
+        {
+            name: "Christmas Season",
+            days: 15,
+            color: "#FFD700",
+            dates: "Wednesday, Dec 25, 2024 – Wednesday, Jan 8, 2025",
+            liturgicalColor: "White/Gold",
+            description: "Celebration of the Incarnation of our Lord Jesus Christ",
+            feasts: "Nativity of the Lord (Wed, Dec 25) • Holy Family (Sun, Dec 29) • Mary, Mother of God (Wed, Jan 1) • Epiphany of the Lord (Sun, Jan 5)"
+        },
+        {
+            name: "Ordinary Time I",
+            days: 36,
+            color: "#228B22",
+            dates: "Thursday, Jan 9 – Thursday, Feb 13, 2025",
+            liturgicalColor: "Green",
+            description: "Time for growth in Christian discipleship and following Christ's teachings",
+            feasts: "Baptism of the Lord (Sun, Jan 12) • Presentation of the Lord (Sun, Feb 2) • St. Blaise (Mon, Feb 3)"
+        },
+        {
+            name: "Lent",
+            days: 42,
+            color: "#9966CC",
+            dates: "Wednesday, Mar 5 – Thursday, Apr 17, 2025",
+            liturgicalColor: "Purple",
+            description: "Forty days of prayer, fasting, and almsgiving in preparation for Easter",
+            feasts: "Ash Wednesday (Wed, Mar 5) • St. Joseph (Wed, Mar 19) • Annunciation of the Lord (Tue, Mar 25)"
+        },
+        {
+            name: "Holy Week",
+            days: 7,
+            color: "#8B0000",
+            dates: "Sunday, Apr 13 – Saturday, Apr 19, 2025",
+            liturgicalColor: "Red/Purple",
+            description: "The most sacred week of the liturgical year, commemorating Christ's Passion",
+            feasts: "Palm Sunday (Sun, Apr 13) • Holy Thursday (Thu, Apr 17) • Good Friday (Fri, Apr 18) • Holy Saturday & Easter Vigil (Sat, Apr 19)"
+        },
+        {
+            name: "Easter Season",
+            days: 49,
+            color: "#FFD700",
+            dates: "Sunday, Apr 20 – Thursday, Jun 8, 2025",
+            liturgicalColor: "White/Gold",
+            description: "Fifty days of Alleluia! Celebrating Christ's Resurrection and new life",
+            feasts: "Easter Sunday (Sun, Apr 20) • Divine Mercy Sunday (Sun, Apr 27) • St. Mark (Fri, Apr 25) • St. Joseph the Worker (Thu, May 1) • Ascension (Thu, May 29)"
+        },
+        {
+            name: "Pentecost",
+            days: 1,
+            color: "#DC143C",
+            dates: "Sunday, Jun 8, 2025",
+            liturgicalColor: "Red",
+            description: "The Birthday of the Church - celebrating the descent of the Holy Spirit",
+            feasts: "Pentecost Sunday (Sun, Jun 8)"
+        },
+        {
+            name: "Ordinary Time II",
+            days: 187,
+            color: "#228B22",
+            dates: "Monday, Jun 9 – Saturday, Nov 29, 2025",
+            liturgicalColor: "Green",
+            description: "The longest season, focused on Christ's public ministry and our call to discipleship",
+            feasts: "Trinity Sunday (Sun, Jun 15) • Corpus Christi (Sun, Jun 22) • Sacred Heart (Fri, Jun 27) • Sts. Peter & Paul (Sun, Jun 29) • Assumption (Fri, Aug 15) • All Saints (Sat, Nov 1) • All Souls (Sun, Nov 2) • Christ the King (Sun, Nov 23)"
+        }
+    ];
+
+
+        // Calculate total days and create pie slices
+        const totalDays = seasons.reduce((sum, season) => sum + season.days, 0);
+        const centerX = 300;
+        const centerY = 300;
+        const radius = 240;
+        let currentAngle = -90; // Start at top (12 o'clock)
+
+        const segmentsGroup = document.getElementById('segments');
+        const tooltip = document.getElementById('tooltip');
+
+        // Get today's date and format it
+        const today = new Date();
+        const formattedDate = today.toLocaleDateString('en-US', {
+            weekday: 'long',
+            month: 'long',
+            day: 'numeric',
+            year: 'numeric'
+        });
+
+        // Inject into the h2 element
+        document.getElementById('today-date').textContent = formattedDate;
+
+
+        // Create SVG path for each season
+        seasons.forEach((season, index) => {
+            const angle = (season.days / totalDays) * 360;
+            const startAngle = currentAngle;
+            const endAngle = currentAngle + angle;
+
+            // Convert angles to radians
+            const startRad = (startAngle * Math.PI) / 180;
+            const endRad = (endAngle * Math.PI) / 180;
+
+            // Calculate arc coordinates
+            const x1 = centerX + radius * Math.cos(startRad);
+            const y1 = centerY + radius * Math.sin(startRad);
+            const x2 = centerX + radius * Math.cos(endRad);
+            const y2 = centerY + radius * Math.sin(endRad);
+
+            // Create path for pie slice
+            const largeArcFlag = angle > 180 ? 1 : 0;
+            const pathData = [
+                `M ${centerX} ${centerY}`,
+                `L ${x1} ${y1}`,
+                `A ${radius} ${radius} 0 ${largeArcFlag} 1 ${x2} ${y2}`,
+                'Z'
+            ].join(' ');
+
+            // Create path element
+            const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            path.setAttribute('d', pathData);
+            path.setAttribute('fill', season.color);
+            // path.setAttribute('fill-opacity', '0.2');
+            path.classList.add('season-segment');
+            path.dataset.season = season.name;
+            path.dataset.dates = season.dates;
+            path.dataset.color = season.liturgicalColor;
+            path.dataset.description = season.description;
+            path.dataset.feasts = season.feasts;
+
+            // Add event listeners
+            path.addEventListener('mouseenter', (e) => {
+                const season = e.currentTarget.dataset.season;
+                const dates = e.currentTarget.dataset.dates;
+                const color = e.currentTarget.dataset.color;
+                const description = e.currentTarget.dataset.description;
+                const feasts = e.currentTarget.dataset.feasts;
+
+                tooltip.innerHTML = `
+                    <h4>${season}</h4>
+                    <div class="dates">${dates}</div>
+                    <div style="color: #FFD700; font-size: 12px; margin-bottom: 8px;">Liturgical Color: ${color}</div>
+                    <div class="description">${description}</div>
+                    <div class="feasts"><strong>Major Feasts & Observances:</strong><br>${feasts}</div>
+                `;
+                tooltip.classList.add('show');
+            });
+
+            // path.addEventListener('mousemove', (e) => {
+            //     const rect = document.querySelector('.calendar-container').getBoundingClientRect();
+            //     const tooltipX = e.clientX - rect.left + 15;
+            //     const tooltipY = e.clientY - rect.top + 20;
+
+            //     tooltip.style.left = Math.min(tooltipX, rect.width - 320) + 'px';
+            //     tooltip.style.top = Math.max(tooltipY, 10) + 'px';
+            // });
+
+            path.addEventListener('mouseleave', () => {
+                tooltip.classList.remove('show');
+            });
+
+            path.addEventListener('click', (e) => {
+                const season = e.currentTarget.dataset.season;
+                console.log(`Selected: ${season}`);
+            });
+
+            segmentsGroup.appendChild(path);
+            currentAngle = endAngle;
+        });
+
+        // Draw today's position as a radial dashed line
+        const yearStart = new Date(today.getFullYear(), 0, 1);
+        const yearEnd = new Date(today.getFullYear(), 11, 31);
+
+        // Day of year calculation
+        const dayOfYear = Math.floor((today - yearStart) / (1000 * 60 * 60 * 24));
+        const totalDaysInYear = Math.floor((yearEnd - yearStart) / (1000 * 60 * 60 * 24)) + 1;
+        const todayAngle = ((dayOfYear / totalDaysInYear) * 360) - 90; // -90 = start from top
+
+        const rad = (todayAngle * Math.PI) / 180;
+        const x = centerX + radius * Math.cos(rad);
+        const y = centerY + radius * Math.sin(rad);
+
+        const marker = document.getElementById("today-marker");
+        marker.setAttribute("x1", centerX);
+        marker.setAttribute("y1", centerY);
+        marker.setAttribute("x2", x);
+        marker.setAttribute("y2", y);
+        // Position the "Today" label slightly beyond the radius
+        const labelOffset = 20; // pixels past the arc
+        const labelX = centerX + (radius + labelOffset) * Math.cos(rad);
+        const labelY = centerY + (radius + labelOffset) * Math.sin(rad);
+
+        const label = document.getElementById("today-label");
+        label.setAttribute("x", labelX);
+        label.setAttribute("y", labelY);
+        // Optional: rotate the label to follow arc
+        label.setAttribute("transform", `rotate(${todayAngle}, ${labelX}, ${labelY})`);
+        // Important Catholic feasts with actual 2024–2026 dates
+        const importantDates = [
+            { name: "Sacred Heart", date: new Date("2025-06-27") },
+            { name: "Feast of St. Peter & Paul", date: new Date("2025-06-29") },
+            { name: "Assumption of Mary", date: new Date("2025-08-15") },
+            { name: "All Saints", date: new Date("2025-11-01") },
+            { name: "All Souls", date: new Date("2025-11-02") },
+            { name: "Christ the King", date: new Date("2025-11-23") },
+            { name: "First Sunday of Advent", date: new Date("2025-11-30") },
+            { name: "Immaculate Conception", date: new Date("2025-12-08") },
+            { name: "Christmas", date: new Date("2025-12-25") },
+            { name: "Mary, Mother of God", date: new Date("2026-01-01") },
+            { name: "Epiphany", date: new Date("2026-01-04") },
+            { name: "Ash Wednesday", date: new Date("2026-02-18") },
+            { name: "Annunciation", date: new Date("2026-03-25") },
+            { name: "Easter Sunday", date: new Date("2026-04-05") },
+            { name: "Ascension", date: new Date("2026-05-14") },
+            { name: "Pentecost", date: new Date("2026-05-24") },
+            { name: "Corpus Christi", date: new Date("2026-06-04") }
+        ];
+
+
+        const upcoming = importantDates
+            .filter(ev => ev.date >= today)
+            .sort((a, b) => a.date - b.date)
+            .slice(0, 3);
+
+        const list = document.getElementById("important-dates");
+        list.innerHTML = "";
+        upcoming.forEach(ev => {
+            const li = document.createElement("li");
+            li.textContent = `${ev.name} – ${ev.date.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric', year: 'numeric' })}`;
+            list.appendChild(li);
+        });
+
+    </script>
+</body>
+</html>
