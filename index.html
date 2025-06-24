@@ -193,6 +193,14 @@
             #today-label {
                 display: none; /* Optional: hide label if it's too small on mobile */
             }
+            .season-segment {
+                -webkit-tap-highlight-color: transparent;
+            }
+
+            .season-segment:focus {
+                outline: none;
+}
+
         }
 
     </style>
@@ -379,6 +387,7 @@
             path.dataset.color = season.liturgicalColor;
             path.dataset.description = season.description;
             path.dataset.feasts = season.feasts;
+            path.setAttribute("tabindex", "-1");
 
             // Add event listeners
             path.addEventListener('mouseenter', (e) => {
