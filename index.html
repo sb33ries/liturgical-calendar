@@ -251,7 +251,7 @@
 
 
     <script>
-        // Season data with duration in days
+        // Season data with duration in days (Pentecost and Holy Week removed)
         const seasons = [
         {
             name: "Advent",
@@ -282,39 +282,21 @@
         },
         {
             name: "Lent",
-            days: 42,
+            days: 49,
             color: "#9966CC",
-            dates: "Wednesday, Mar 5 – Thursday, Apr 17, 2025",
+            dates: "Wednesday, Mar 5 – Saturday, Apr 19, 2025",
             liturgicalColor: "Purple",
-            description: "Forty days of prayer, fasting, and almsgiving in preparation for Easter",
-            feasts: "Ash Wednesday (Wed, Mar 5) • St. Joseph (Wed, Mar 19) • Annunciation of the Lord (Tue, Mar 25)"
-        },
-        {
-            name: "Holy Week",
-            days: 7,
-            color: "#8B0000",
-            dates: "Sunday, Apr 13 – Saturday, Apr 19, 2025",
-            liturgicalColor: "Red/Purple",
-            description: "The most sacred week of the liturgical year, commemorating Christ's Passion",
-            feasts: "Palm Sunday (Sun, Apr 13) • Holy Thursday (Thu, Apr 17) • Good Friday (Fri, Apr 18) • Holy Saturday & Easter Vigil (Sat, Apr 19)"
+            description: "Forty-six days of prayer, fasting, and almsgiving in preparation for Easter, including Holy Week",
+            feasts: "Ash Wednesday (Wed, Mar 5) • St. Joseph (Wed, Mar 19) • Annunciation of the Lord (Tue, Mar 25) • Palm Sunday (Sun, Apr 13) • Holy Thursday (Thu, Apr 17) • Good Friday (Fri, Apr 18) • Holy Saturday & Easter Vigil (Sat, Apr 19)"
         },
         {
             name: "Easter Season",
-            days: 49,
+            days: 50,
             color: "#FFD700",
-            dates: "Sunday, Apr 20 – Thursday, Jun 8, 2025",
+            dates: "Sunday, Apr 20 – Sunday, Jun 8, 2025",
             liturgicalColor: "White/Gold",
-            description: "Fifty days of Alleluia! Celebrating Christ's Resurrection and new life",
-            feasts: "Easter Sunday (Sun, Apr 20) • Divine Mercy Sunday (Sun, Apr 27) • St. Mark (Fri, Apr 25) • St. Joseph the Worker (Thu, May 1) • Ascension (Thu, May 29)"
-        },
-        {
-            name: "Pentecost",
-            days: 1,
-            color: "#DC143C",
-            dates: "Sunday, Jun 8, 2025",
-            liturgicalColor: "Red",
-            description: "The Birthday of the Church - celebrating the descent of the Holy Spirit",
-            feasts: "Pentecost Sunday (Sun, Jun 8)"
+            description: "Fifty days of Alleluia! Celebrating Christ's Resurrection and new life, including Pentecost",
+            feasts: "Easter Sunday (Sun, Apr 20) • Divine Mercy Sunday (Sun, Apr 27) • St. Mark (Fri, Apr 25) • St. Joseph the Worker (Thu, May 1) • Ascension (Thu, May 29) • Pentecost Sunday (Sun, Jun 8)"
         },
         {
             name: "Ordinary Time II",
@@ -326,7 +308,6 @@
             feasts: "Trinity Sunday (Sun, Jun 15) • Corpus Christi (Sun, Jun 22) • Sacred Heart (Fri, Jun 27) • Sts. Peter & Paul (Sun, Jun 29) • Assumption (Fri, Aug 15) • All Saints (Sat, Nov 1) • All Souls (Sun, Nov 2) • Christ the King (Sun, Nov 23)"
         }
     ];
-
 
         // Calculate total days and create pie slices
         const totalDays = seasons.reduce((sum, season) => sum + season.days, 0);
@@ -349,7 +330,6 @@
 
         // Inject into the h2 element
         document.getElementById('today-date').textContent = formattedDate;
-
 
         // Create SVG path for each season
         seasons.forEach((season, index) => {
@@ -407,15 +387,6 @@
                 tooltip.classList.add('show');
             });
 
-            // path.addEventListener('mousemove', (e) => {
-            //     const rect = document.querySelector('.calendar-container').getBoundingClientRect();
-            //     const tooltipX = e.clientX - rect.left + 15;
-            //     const tooltipY = e.clientY - rect.top + 20;
-
-            //     tooltip.style.left = Math.min(tooltipX, rect.width - 320) + 'px';
-            //     tooltip.style.top = Math.max(tooltipY, 10) + 'px';
-            // });
-
             path.addEventListener('mouseleave', () => {
                 tooltip.classList.remove('show');
             });
@@ -429,14 +400,22 @@
             currentAngle = endAngle;
         });
 
-        // Draw today's position as a radial dashed line
-        const yearStart = new Date(today.getFullYear(), 0, 1);
-        const yearEnd = new Date(today.getFullYear(), 11, 31);
-
-        // Day of year calculation
-        const dayOfYear = Math.floor((today - yearStart) / (1000 * 60 * 60 * 24));
-        const totalDaysInYear = Math.floor((yearEnd - yearStart) / (1000 * 60 * 60 * 24)) + 1;
-        const todayAngle = ((dayOfYear / totalDaysInYear) * 360) - 90; // -90 = start from top
+        // Calculate today's position based on liturgical year
+        // Liturgical year starts on First Sunday of Advent (Dec 1, 2024)
+        const liturgicalYearStart = new Date("2024-12-01");
+        const liturgicalYearEnd = new Date("2025-11-29"); // Saturday before first Sunday of Advent 2025
+        
+        // Calculate days from start of liturgical year
+        let daysFromStart;
+        if (today >= liturgicalYearStart) {
+            daysFromStart = Math.floor((today - liturgicalYearStart) / (1000 * 60 * 60 * 24));
+        } else {
+            // If we're in the previous liturgical year cycle
+            const prevLiturgicalStart = new Date("2023-12-03"); // First Sunday of Advent 2023
+            daysFromStart = Math.floor((today - prevLiturgicalStart) / (1000 * 60 * 60 * 24));
+        }
+        
+        const todayAngle = ((daysFromStart / totalDays) * 360) - 90; // -90 = start from top
 
         const rad = (todayAngle * Math.PI) / 180;
         const x = centerX + radius * Math.cos(rad);
@@ -447,6 +426,7 @@
         marker.setAttribute("y1", centerY);
         marker.setAttribute("x2", x);
         marker.setAttribute("y2", y);
+        
         // Position the "Today" label slightly beyond the radius
         const labelOffset = 20; // pixels past the arc
         const labelX = centerX + (radius + labelOffset) * Math.cos(rad);
@@ -457,6 +437,7 @@
         label.setAttribute("y", labelY);
         // Optional: rotate the label to follow arc
         label.setAttribute("transform", `rotate(${todayAngle}, ${labelX}, ${labelY})`);
+        
         // Important Catholic feasts with actual 2024–2026 dates
         const importantDates = [
             { name: "Sacred Heart", date: new Date("2025-06-27") },
@@ -477,7 +458,6 @@
             { name: "Pentecost", date: new Date("2026-05-24") },
             { name: "Corpus Christi", date: new Date("2026-06-04") }
         ];
-
 
         const upcoming = importantDates
             .filter(ev => ev.date >= today)
