@@ -33,7 +33,7 @@
         .daily-info {
             background: #f9f9f9;
             border-radius: 12px;
-            padding: 20px;
+            padding: 10px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
             flex: 1;
             overflow-y: auto;
@@ -251,63 +251,64 @@
 
 
     <script>
-        // Season data with duration in days (Pentecost and Holy Week removed)
+        // Season data with duration in days 
         const seasons = [
-        {
-            name: "Advent",
-            days: 28,
-            color: "#9966CC",
-            dates: "Sunday, Dec 1 – Tuesday, Dec 24, 2024",
-            liturgicalColor: "Purple",
-            description: "Season of joyful expectation and preparation for the coming of Christ",
-            feasts: "First Sunday of Advent (Sun, Dec 1) • St. Nicholas (Fri, Dec 6) • Immaculate Conception (Sun, Dec 8) • St. Lucy (Fri, Dec 13) • O Antiphons (Dec 17–23)"
-        },
-        {
-            name: "Christmas Season",
-            days: 15,
-            color: "#FFD700",
-            dates: "Wednesday, Dec 25, 2024 – Wednesday, Jan 8, 2025",
-            liturgicalColor: "White/Gold",
-            description: "Celebration of the Incarnation of our Lord Jesus Christ",
-            feasts: "Nativity of the Lord (Wed, Dec 25) • Holy Family (Sun, Dec 29) • Mary, Mother of God (Wed, Jan 1) • Epiphany of the Lord (Sun, Jan 5)"
-        },
-        {
-            name: "Ordinary Time I",
-            days: 36,
-            color: "#228B22",
-            dates: "Thursday, Jan 9 – Thursday, Feb 13, 2025",
-            liturgicalColor: "Green",
-            description: "Time for growth in Christian discipleship and following Christ's teachings",
-            feasts: "Baptism of the Lord (Sun, Jan 12) • Presentation of the Lord (Sun, Feb 2) • St. Blaise (Mon, Feb 3)"
-        },
-        {
-            name: "Lent",
-            days: 49,
-            color: "#9966CC",
-            dates: "Wednesday, Mar 5 – Saturday, Apr 19, 2025",
-            liturgicalColor: "Purple",
-            description: "Forty-six days of prayer, fasting, and almsgiving in preparation for Easter, including Holy Week",
-            feasts: "Ash Wednesday (Wed, Mar 5) • St. Joseph (Wed, Mar 19) • Annunciation of the Lord (Tue, Mar 25) • Palm Sunday (Sun, Apr 13) • Holy Thursday (Thu, Apr 17) • Good Friday (Fri, Apr 18) • Holy Saturday & Easter Vigil (Sat, Apr 19)"
-        },
-        {
-            name: "Easter Season",
-            days: 50,
-            color: "#FFD700",
-            dates: "Sunday, Apr 20 – Sunday, Jun 8, 2025",
-            liturgicalColor: "White/Gold",
-            description: "Fifty days of Alleluia! Celebrating Christ's Resurrection and new life, including Pentecost",
-            feasts: "Easter Sunday (Sun, Apr 20) • Divine Mercy Sunday (Sun, Apr 27) • St. Mark (Fri, Apr 25) • St. Joseph the Worker (Thu, May 1) • Ascension (Thu, May 29) • Pentecost Sunday (Sun, Jun 8)"
-        },
-        {
-            name: "Ordinary Time II",
-            days: 187,
-            color: "#228B22",
-            dates: "Monday, Jun 9 – Saturday, Nov 29, 2025",
-            liturgicalColor: "Green",
-            description: "The longest season, focused on Christ's public ministry and our call to discipleship",
-            feasts: "Trinity Sunday (Sun, Jun 15) • Corpus Christi (Sun, Jun 22) • Sacred Heart (Fri, Jun 27) • Sts. Peter & Paul (Sun, Jun 29) • Assumption (Fri, Aug 15) • All Saints (Sat, Nov 1) • All Souls (Sun, Nov 2) • Christ the King (Sun, Nov 23)"
-        }
-    ];
+            {
+                name: "Advent",
+                days: 24,
+                color: "#9966CC",
+                dates: "Sunday, Dec 1 – Tuesday, Dec 24, 2024",
+                liturgicalColor: "Purple",
+                description: "Season of joyful expectation and preparation for the coming of Christ",
+                feasts: "First Sunday of Advent (Sun, Dec 1) • St. Nicholas (Fri, Dec 6) • Immaculate Conception (Sun, Dec 8) • St. Lucy (Fri, Dec 13) • O Antiphons (Dec 17–23)"
+            },
+            {
+                name: "Christmas Season",
+                days: 19,
+                color: "#FFD700",
+                dates: "Wednesday, Dec 25, 2024 – Sunday, Jan 12, 2025",
+                liturgicalColor: "White/Gold",
+                description: "Celebration of the Incarnation of our Lord Jesus Christ",
+                feasts: "Nativity of the Lord (Wed, Dec 25) • Holy Family (Sun, Dec 29) • Mary, Mother of God (Wed, Jan 1) • Epiphany (Mon, Jan 6) • Baptism of the Lord (Sun, Jan 12)"
+            },
+            {
+                name: "Ordinary Time I",
+                days: 52,
+                color: "#228B22",
+                dates: "Monday, Jan 13 – Tuesday, Mar 5, 2025",
+                liturgicalColor: "Green",
+                description: "Time for growth in Christian discipleship and following Christ's teachings",
+                feasts: "Presentation of the Lord (Sun, Feb 2) • St. Blaise (Mon, Feb 3)"
+            },
+            {
+                name: "Lent",
+                days: 46,
+                color: "#9966CC",
+                dates: "Wednesday, Mar 5 – Saturday, April 19, 2025",
+                liturgicalColor: "Purple",
+                description: "Forty days of prayer, fasting, and almsgiving in preparation for Easter, including Holy Week",
+                feasts: "Ash Wednesday (Wed, Mar 5) • St. Joseph (Wed, Mar 19) • Annunciation (Tue, Mar 25) • Palm Sunday (Sun, Mar 23) • Triduum: Holy Thursday (Mar 27) • Good Friday (Mar 28) • Holy Saturday (Mar 29)"
+            },
+            {
+                name: "Easter Season",
+                days: 50,
+                color: "#FFD700",
+                dates: "Sunday, Apr 20 – Sunday, June 8, 2025",
+                liturgicalColor: "White/Gold",
+                description: "Fifty days of Alleluia! Celebrating Christ's Resurrection and new life, including Pentecost",
+                feasts: "Easter Sunday (Mar 30) • Divine Mercy (Apr 6) • Ascension (Thu, May 8) • Pentecost (May 18)"
+            },
+            {
+                name: "Ordinary Time II",
+                days: 166,
+                color: "#228B22",
+                dates: "Monday, June 8 – Saturday, Nov 29, 2025",
+                liturgicalColor: "Green",
+                description: "The longest season, focused on Christ's public ministry and our call to discipleship",
+                feasts: "Trinity Sunday (May 25) • Corpus Christi (Jun 1) • Sacred Heart (Fri, Jun 6) • Peter & Paul (Sun, Jun 29) • Assumption (Fri, Aug 15) • All Saints (Sat, Nov 1) • All Souls (Sun, Nov 2) • Christ the King (Sun, Nov 23)"
+            }
+        ];
+
 
         // Calculate total days and create pie slices
         const totalDays = seasons.reduce((sum, season) => sum + season.days, 0);
@@ -330,6 +331,28 @@
 
         // Inject into the h2 element
         document.getElementById('today-date').textContent = formattedDate;
+        const weekday = today.toLocaleDateString('en-US', { weekday: 'long' });
+        const feastSection = document.createElement("div");
+        feastSection.className = "reading-section";
+
+        
+
+        // Add fasting days
+        if (weekday === "Wednesday" || weekday === "Friday") {
+            feastSection.innerHTML += "<h3>Fast Day</h3>";
+        }
+        feastSection.innerHTML = "<h3>Daily Rosary Prayers</h3><ul>";
+        // Add Rosary Mysteries
+        if (weekday === "Thursday") {
+            feastSection.innerHTML += "<ul><li>The Resurrection</li><li>The Ascension</li><li>THe Descent of the Holy Spirit</li><li>The Assumption of Mary</li><li>The Coronation of Mary</li></ul>";
+        } else if (weekday === "Wednesday" || weekday === "Sunday") {
+            feastSection.innerHTML += "<ul><li>The Baptism in the Jordan</li><li>The Wedding at Cana</li><li>The Proclamation of the Kingdom of God</li><li>The Transfiguration</li><li>The Institution of the Holy Eucharist</li></ul>";
+        }
+
+        feastSection.innerHTML += "</ul>";
+
+        // Append this to the daily info box
+        document.querySelector(".daily-info").appendChild(feastSection);
 
         // Create SVG path for each season
         seasons.forEach((season, index) => {
@@ -399,11 +422,11 @@
             segmentsGroup.appendChild(path);
             currentAngle = endAngle;
         });
-
         // Calculate today's position based on liturgical year
         // Liturgical year starts on First Sunday of Advent (Dec 1, 2024)
-        const liturgicalYearStart = new Date("2024-12-01");
-        const liturgicalYearEnd = new Date("2025-11-29"); // Saturday before first Sunday of Advent 2025
+        const liturgicalYearStart = new Date("2024-12-01"); // First Sunday of Advent
+        const liturgicalYearEnd = new Date("2025-11-29"); // Saturday before next Advent
+
         
         // Calculate days from start of liturgical year
         let daysFromStart;
@@ -437,6 +460,126 @@
         label.setAttribute("y", labelY);
         // Optional: rotate the label to follow arc
         label.setAttribute("transform", `rotate(${todayAngle}, ${labelX}, ${labelY})`);
+
+        // ====== Holiday Ring ======
+        const holidayRingRadius = radius + 5;
+        const holidayRingWidth = 5;
+        const holidayGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        holidayGroup.setAttribute('id', 'holiday-ring');
+        segmentsGroup.parentNode.appendChild(holidayGroup);
+
+        // Add white base ring
+        const baseRing = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        baseRing.setAttribute('cx', centerX);
+        baseRing.setAttribute('cy', centerY);
+        baseRing.setAttribute('r', holidayRingRadius);
+        baseRing.setAttribute('fill', 'none');
+        baseRing.setAttribute('stroke', '#ffff');
+        baseRing.setAttribute('stroke-width', holidayRingWidth);
+        holidayGroup.appendChild(baseRing);
+
+        // Holiday data (liturgical day index and color)
+        // const liturgicalYearStart = new Date("2024-12-01");
+
+        const holidays = [
+            { name: "Immaculate Conception", date: new Date("2024-12-08"), color: "#FFFFFF" },
+            { name: "Christmas", date: new Date("2024-12-25"), color: "#FFFFFF" },
+            { name: "Mary, Mother of God", date: new Date("2025-01-01"), color: "#FFFFFF" },
+            { name: "Epiphany", date: new Date("2025-01-06"), color: "#FFFFFF" },
+            { name: "Baptism of the Lord", date: new Date("2025-01-12"), color: "#FFFFFF" },
+            { name: "Presentation of the Lord", date: new Date("2025-02-02"), color: "#FFFFFF" },
+            { name: "Ash Wednesday", date: new Date("2025-03-05"), color: "#800080" },
+            { name: "St. Joseph", date: new Date("2025-03-19"), color: "#FFFFFF" },
+            { name: "Annunciation", date: new Date("2025-03-25"), color: "#FFFFFF" },
+            { name: "Palm Sunday", date: new Date("2025-04-13"), color: "#800080" },
+            { name: "Holy Thursday", date: new Date("2025-04-17"), color: "#800080" },
+            { name: "Good Friday", date: new Date("2025-04-18"), color: "#800080" },
+            { name: "Holy Saturday", date: new Date("2025-04-19"), color: "#800080" },
+            { name: "Easter Sunday", date: new Date("2025-04-20"), color: "#FFFFFF" },
+            { name: "Divine Mercy Sunday", date: new Date("2025-04-27"), color: "#FFFFFF" },
+            { name: "Ascension", date: new Date("2025-05-29"), color: "#FFFFFF" },
+            { name: "Pentecost", date: new Date("2025-06-09"), color: "#FF0000" },
+            { name: "Trinity Sunday", date: new Date("2025-06-15"), color: "#FFFFFF" },
+            { name: "Corpus Christi", date: new Date("2025-06-22"), color: "#FFFFFF" },
+            { name: "Sacred Heart", date: new Date("2025-06-27"), color: "#FF0000" },
+            { name: "St. Peter & Paul", date: new Date("2025-06-29"), color: "#FF0000" },
+            { name: "Assumption of Mary", date: new Date("2025-08-15"), color: "#FFFFFF" },
+            { name: "All Saints", date: new Date("2025-11-01"), color: "#FFFFFF" },
+            { name: "All Souls", date: new Date("2025-11-02"), color: "#4B0082" },
+            { name: "Christ the King", date: new Date("2025-11-23"), color: "#FFD700" },
+            { name: "First Sunday of Advent", date: new Date("2025-11-30"), color: "#800080" },
+
+            // Today marker
+            { name: "Today", date: today, color: "#000000" }
+        ].map(h => ({
+            ...h,
+            index: Math.floor((h.date - liturgicalYearStart) / (1000 * 60 * 60 * 24))
+        }));
+
+
+        holidays.forEach(holiday => {
+        const startIdx = holiday.indexStart ?? holiday.index;
+        const endIdx = holiday.indexEnd ?? holiday.index;
+        const startAngle = ((startIdx / totalDays) * 360) - 90;
+        const endAngle = ((endIdx + 1) / totalDays) * 360 - 90;
+
+        const startRad = (startAngle * Math.PI) / 180;
+        const endRad = (endAngle * Math.PI) / 180;
+
+        const x1 = centerX + holidayRingRadius * Math.cos(startRad);
+        const y1 = centerY + holidayRingRadius * Math.sin(startRad);
+        const x2 = centerX + holidayRingRadius * Math.cos(endRad);
+        const y2 = centerY + holidayRingRadius * Math.sin(endRad);
+
+        const largeArcFlag = (endAngle - startAngle) > 180 ? 1 : 0;
+
+        const pathData = [
+            `M ${x1} ${y1}`,
+            `A ${holidayRingRadius} ${holidayRingRadius} 0 ${largeArcFlag} 1 ${x2} ${y2}`
+        ].join(' ');
+
+        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        path.setAttribute('d', pathData);
+        path.setAttribute('fill', 'none');
+        path.setAttribute('stroke', holiday.color);
+        path.setAttribute('stroke-width', holidayRingWidth);
+        path.setAttribute('stroke-linecap', 'round');
+        path.setAttribute('cursor', 'pointer');
+        path.setAttribute('opacity', '0.2');
+        path.style.transition = 'opacity 0.3s ease';
+
+        // Tooltip behavior
+        path.addEventListener('mouseenter', () => {
+            path.setAttribute('opacity', '1.0');
+
+            const formatted = holiday.date.toLocaleDateString('en-US', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+
+            tooltip.innerHTML = `
+                <h4>${holiday.name}</h4>
+                <div class="dates">${formatted}</div>
+                
+            `;
+            tooltip.classList.add('show');
+        });
+
+        path.addEventListener('mouseleave', () => {
+            path.setAttribute('opacity', '0.2'); // fade again
+            tooltip.classList.remove('show');
+        });
+
+        holidayGroup.appendChild(path);
+        });
+
+        // Remove Today label (text element)
+        const todayLabel = document.getElementById("today-label");
+        if (todayLabel) todayLabel.remove();
+
+        
         
         // Important Catholic feasts with actual 2024–2026 dates
         const importantDates = [
@@ -458,6 +601,8 @@
             { name: "Pentecost", date: new Date("2026-05-24") },
             { name: "Corpus Christi", date: new Date("2026-06-04") }
         ];
+
+        
 
         const upcoming = importantDates
             .filter(ev => ev.date >= today)
